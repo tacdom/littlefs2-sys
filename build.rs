@@ -4,6 +4,7 @@ use std::path::PathBuf;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut builder = cc::Build::new();
     let target = env::var("TARGET")?;
+    let sysroot = env::var("TOOLCHAIN_SYSROOT")?;
     let builder = builder
         .flag("-std=c11")
         .flag("-DLFS_NO_MALLOC")
@@ -26,6 +27,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let bindings = bindgen::Builder::default()
         .header("littlefs/lfs.h")
         .clang_arg(format!("--target={}", target))
+        .clang_arg(format!("--sysroot={}", sysroot))
         .use_core()
         .ctypes_prefix("cty")
         .rustfmt_bindings(true)
